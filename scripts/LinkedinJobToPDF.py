@@ -1,4 +1,5 @@
 import logging
+import os
 from os import listdir
 from os.path import isfile, join
 
@@ -73,7 +74,35 @@ def linkedin_to_pdf(job_url: str):
         logging.error(e)
         exit()
 
+def read_urls_from_file(file_path):
+    """
+    Read URLs from a text file.
+    
+    Args:
+        file_path (str): Path to the text file containing URLs
+        
+    Returns:
+        list: List of URLs read from the file
+    """
+    urls = []
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                # Strip whitespace and add non-empty lines to the list
+                url = line.strip()
+                if url:
+                    urls.append(url)
+        return urls
+    except FileNotFoundError:
+        print(f"Error: File not found at {file_path}")
+        return []
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return []
 
+# Example usage
+# urls = read_urls_from_file('/path/to/your/file.txt')
 if __name__ == "__main__":
-    url = easygui.enterbox("Enter the URL of the LinkedIn Job Posting:").strip()
-    linkedin_to_pdf(url)
+    urls = read_urls_from_file("Data/links.txt")
+    for url in urls:
+        linkedin_to_pdf(url)
